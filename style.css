@@ -29,6 +29,42 @@ body {
     font-size: 24px;
     font-weight: 600;
     margin: 0;
+    flex: 0 0 auto;
+}
+
+.search-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.header-actions {
+    flex: 0 0 auto;
+}
+
+.add-btn {
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.add-btn:hover {
+    background: #45a049;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.add-btn i {
+    font-size: 12px;
 }
 
 /* TOP BUTTON BAR */
@@ -50,14 +86,14 @@ body {
     gap: 10px;
 }
 
-/* RIGHT SEARCH */
-.right-box {
+/* CENTER SEARCH */
+.search-center {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.right-box i {
+.search-center i {
     color: rgba(255, 255, 255, 0.8);
     margin-right: 8px;
     font-size: 16px;
@@ -190,18 +226,77 @@ tbody td {
     border-bottom: 1px solid #eee;
 }
 
+tbody td:last-child {
+    white-space: nowrap;
+}
+
 tbody tr:hover {
     background: #f1f7ff;
 }
 
-/* ACTION LINK */
-tbody a {
-    color: #1976d2;
-    font-weight: bold;
-    text-decoration: none;
+/* ACTION BUTTONS CONTAINER */
+.action-buttons {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
 }
 
-tbody a:hover {
+/* ACTION BUTTONS */
+.action-btn {
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 5px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+}
+
+.view-btn {
+    background: #2196f3;
+    color: white;
+}
+
+.view-btn:hover {
+    background: #1976d2;
+    transform: translateY(-1px);
+}
+
+.edit-btn {
+    background: #ff9800;
+    color: white;
+}
+
+.edit-btn:hover {
+    background: #f57c00;
+    transform: translateY(-1px);
+}
+
+.delete-btn {
+    background: #f44336;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #d32f2f;
+    transform: translateY(-1px);
+}
+
+/* APPLY LINK */
+.apply-link {
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 15px;
+    margin-left: 35px;
+}
+
+.apply-link:hover {
     text-decoration: underline;
 }
 
@@ -218,10 +313,39 @@ tbody a:hover {
         flex-direction: column;
         gap: 15px;
         text-align: center;
+        padding: 15px 20px;
     }
 
     .header h5 {
         font-size: 20px;
+        align-self: flex-start;
+    }
+
+    .header {
+        padding: 15px 20px;
+    }
+
+    .header h5 {
+        font-size: 18px;
+    }
+
+    .search-center {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .header-actions {
+        display: none; /* Hide add button on mobile for space */
+    }
+
+    #Internship {
+        width: 200px;
+        max-width: 200px;
+    }
+
+    #searchBtn {
+        padding: 10px 15px;
+        font-size: 13px;
     }
 
     #searchType {
@@ -231,18 +355,6 @@ tbody a:hover {
         margin-bottom: 10px;
     }
 
-    #Internship {
-        width: 100%;
-        max-width: 300px;
-    }
-
-    #searchBtn {
-        margin-left: 0;
-        margin-top: 10px;
-        width: 100%;
-        max-width: 150px;
-    }
-
     .upper-btn-box {
         flex-direction: column;
         gap: 15px;
@@ -250,6 +362,310 @@ tbody a:hover {
 
     .left-box {
         width: 100%;
+        justify-content: center;
+    }
+
+    .action-buttons {
+        margin-bottom: 3px;
+    }
+
+    .action-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+        margin-right: 3px;
+    }
+
+    .apply-link {
+        font-size: 11px;
+        display: block;
+        margin-top: 3px;
+    }
+}
+
+/* MODAL */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #1976d2, #1565c0);
+    color: white;
+    padding: 20px 25px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.close-btn {
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: #ccc;
+}
+
+.modal-body {
+    padding: 25px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.modal-body h3 {
+    color: #1976d2;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.modal-body p {
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+.modal-body strong {
+    color: #333;
+    font-weight: 600;
+}
+
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.skill-tag {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.apply-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #eee;
+    text-align: center;
+}
+
+.apply-btn-modal {
+    background: #1976d2;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.apply-btn-modal:hover {
+    background: #1565c0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
+}
+
+.modal-footer {
+    padding: 20px 25px;
+    background: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    border-radius: 0 0 12px 12px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn {
+    background: #6c757d;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+.save-btn {
+    background: #28a745;
+    color: white;
+}
+
+.save-btn:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+/* Edit Form Styles */
+.edit-form {
+    display: grid;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    padding: 10px;
+    border: 2px solid #e1e5e9;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #1976d2;
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.skill-input-container {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.skill-input-container input {
+    flex: 1;
+}
+
+.add-skill-btn {
+    padding: 10px 15px;
+    background: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.add-skill-btn:hover {
+    background: #1565c0;
+}
+
+.skill-tags-edit {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.skill-tag-edit {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.skill-tag-edit .remove-skill {
+    cursor: pointer;
+    color: #d32f2f;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.skill-tag-edit .remove-skill:hover {
+    color: #b71c1c;
+}
+
+/* Modal Responsive */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+
+    .modal-header {
+        padding: 15px 20px;
+    }
+
+    .modal-header h2 {
+        font-size: 20px;
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+
+    .skill-tags {
         justify-content: center;
     }
 }
