@@ -147,6 +147,81 @@ window.onclick = function(event) {
 
 let currentEditId = null;
 
+function addInternship() {
+    currentEditId = null;
+    document.getElementById('modal-title').textContent = 'Add Internship';
+    const modalBody = document.getElementById('modal-body');
+    modalBody.innerHTML = `
+        <form class="edit-form" id="edit-form">
+            <div class="form-group">
+                <label for="edit-title">Title</label>
+                <input type="text" id="edit-title" value="" required>
+            </div>
+
+            <div class="form-group">
+                <label for="edit-company">Company</label>
+                <input type="text" id="edit-company" value="" required>
+            </div>
+
+            <div class="form-group">
+                <label for="edit-min-salary">Minimum Salary</label>
+                <input type="number" id="edit-min-salary" value="" required>
+            </div>
+
+            <div class="form-group">
+                <label for="edit-max-salary">Maximum Salary</label>
+                <input type="number" id="edit-max-salary" value="" required>
+            </div>
+
+            <div class="form-group">
+                <label for="edit-duration">Duration</label>
+                <input type="text" id="edit-duration" value="" placeholder="e.g., 3 months">
+            </div>
+
+            <div class="form-group">
+                <label for="edit-stipend">Stipend</label>
+                <input type="text" id="edit-stipend" value="" placeholder="e.g., 5,000 /Month">
+            </div>
+
+            <div class="form-group">
+                <label for="edit-work-type">Work Type</label>
+                <select id="edit-work-type">
+                    <option value="Work From Home">Work From Home</option>
+                    <option value="On-site">On-site</option>
+                    <option value="Hybrid">Hybrid</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="edit-work-time">Work Timing</label>
+                <select id="edit-work-time">
+                    <option value="Full Time">Full Time</option>
+                    <option value="Part Time">Part Time</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Skills</label>
+                <div class="skill-input-container">
+                    <input type="text" id="new-skill" placeholder="Add a skill">
+                    <button type="button" class="add-skill-btn" onclick="addSkill()">Add</button>
+                </div>
+                <div class="skill-tags-edit" id="skill-tags-edit">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="edit-link">Application Link</label>
+                <input type="url" id="edit-link" value="" required>
+            </div>
+        </form>
+    `;
+
+    document.getElementById('modal-footer').style.display = 'flex';
+    document.getElementById('internshipModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
 function editInternship(id) {
     const internship = allInternships.find(item => item.id === id);
     if (internship) {
@@ -233,15 +308,6 @@ function editInternship(id) {
     }
 }
 
-function addSkill() {
-    const newSkill = document.getElementById('new-skill').value.trim();
-    if (newSkill) {
-        const skillTags = document.getElementById('skill-tags-edit');
-        skillTags.innerHTML += `<span class="skill-tag-edit">${newSkill} <span class="remove-skill" onclick="removeSkill('${newSkill}')">&times;</span></span>`;
-        document.getElementById('new-skill').value = '';
-    }
-}
-
 function removeSkill(skill) {
     const skillTags = document.querySelectorAll('.skill-tag-edit');
     skillTags.forEach(tag => {
@@ -251,10 +317,36 @@ function removeSkill(skill) {
     });
 }
 
-function saveInternship() {
-    if (!currentEditId) return;
+function addSkill() {
+    const newSkillInput = document.getElementById('new-skill');
+    const skill = newSkillInput.value.trim();
+    if (skill) {
+        const skillTagsEdit = document.getElementById('skill-tags-edit');
+        const skillTag = document.createElement('span');
+        skillTag.className = 'skill-tag-edit';
+        skillTag.innerHTML = `${skill} <span class="remove-skill" onclick="removeSkill('${skill}')">&times;</span>`;
+        skillTagsEdit.appendChild(skillTag);
+        newSkillInput.value = '';
+    }
+}
 
-    const internship = allInternships.find(item => item.id === currentEditId);
+function saveInternship() {
+    let internship;
+    if (!currentEditId) {
+        // Adding new internship
+        const newId = allInternships.length > 0 ? Math.max(...allInternships.map(i => parseInt(i.id))) + 1 : 1;
+        internship = {
+            id: newId.toString(),
+            title: '',
+            job_type: [],
+            salary: { min: 0, max: 0, currency: '₹' },
+            referal_link: ''
+        };
+        allInternships.push(internship);
+        currentEditId = newId.toString();
+    } else {
+        internship = allInternships.find(item => item.id === currentEditId);
+    }
     if (internship) {
         // Get form values
         const title = document.getElementById('edit-title').value.trim();
