@@ -1,4 +1,4 @@
-const API = "http://localhost:5000/api/internships";
+const API = "http://localhost:5000/api/job-posting";
 const table = document.getElementById("table-data");
 
 // Modal Inputs
@@ -7,11 +7,6 @@ const title = document.getElementById("title");
 const minSalary = document.getElementById("minSalary");
 const maxSalary = document.getElementById("maxSalary");
 const skills = document.getElementById("skills");
-const stipend = document.getElementById("stipend");
-const type = document.getElementById("type");
-const time = document.getElementById("time");
-const workingDays = document.getElementById("workingDays");
-const duration = document.getElementById("duration");
 const link = document.getElementById("link");
 
 // Search
@@ -29,41 +24,31 @@ async function fetchInternships(searchTerm = currentSearch) {
   const data = await res.json();
 
   let filteredData = data;
+
   if (searchTerm) {
+
     filteredData = data.filter(i =>
       i.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      i.job_type.some(type => type.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (i.skills && i.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))) ||
-      i.stipend.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      i.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      i.time.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      i.working_days.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      i.duration.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      i.job_type && i.job_type.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase())) ||
       i.id.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }
 
   table.innerHTML = "";
+
   filteredData.forEach(i => {
+                console.log("Filtered Data:", i.job_type);
+
     // Parse missing fields from job_type if not present
-    const skills = (i.skills && i.skills.length > 0) ? i.skills.join(", ") : i.job_type.filter(j => !j.includes('Stipend:') && !j.includes('Work From Home') && !j.includes('Onsite') && !j.includes('Full Time') && !j.includes('Part Time') && !j.includes('Working Days:') && !j.includes('Duration:') && !j.includes('Internship Duration:') && !j.includes('No prior experience') && !j.includes('Letter of Recommendation') && !j.includes('Certificate of Completion') && !j.includes('Flexible Hours') && !j.includes('Hybrid Working') && j.length < 20).join(", ") || '-';
-    const stipend = i.stipend || i.job_type.find(j => j.includes('Stipend:'))?.replace('Stipend:', '').trim() || '-';
-    const type = i.type || (i.job_type.some(j => j.includes('Work From Home')) ? 'Remote' : i.job_type.some(j => j.includes('Onsite')) ? 'Onsite' : '-');
-    const time = i.time || (i.job_type.some(j => j.includes('Full Time')) ? 'Full Time' : i.job_type.some(j => j.includes('Part Time')) ? 'Part Time' : '-');
-    const working_days = i.working_days || i.job_type.find(j => j.includes('Working Days:'))?.replace('Working Days:', '').trim() || '-';
-    const duration = i.duration || i.job_type.find(j => j.includes('Duration:'))?.replace('Duration:', '').trim() || i.job_type.find(j => j.includes('Internship Duration:'))?.replace('Internship Duration:', '').trim() || '-';
+    const skills = (i.job_type && i.job_type.length > 0) ? i.job_type.join(", ") : '-';
+ 
 
     table.innerHTML += `
       <tr>
         <td>${i.id}</td>
         <td>${i.title}</td>
         <td>${i.salary.currency}${i.salary.min} - ${i.salary.max}</td>
-        <td>${skills}</td>
-        <td>${stipend}</td>
-        <td>${type}</td>
-        <td>${time}</td>
-        <td>${working_days}</td>
-        <td>${duration}</td>
+        <td>${skills}</td>  
         <td>
           <a href="${i.referal_link}" target="_blank">Open</a>
         </td>
@@ -86,16 +71,9 @@ async function saveInternship() {
       min: Number(minSalary.value),
       max: Number(maxSalary.value)
     },
-    job_type: type.value.split(",").map(t => t.trim()),
-    skills: skills.value.split(",").map(s => s.trim()),
-    stipend: stipend.value.trim(),
-    type: type.value.trim(),
-    time: time.value.trim(),
-    working_days: workingDays.value.trim(),
-    duration: duration.value.trim(),
+    job_type: skills.value.split(",").map(s => s.trim()),
     referal_link: link.value.trim()
   };
-
   if (isEdit) {
     await fetch(`${API}/${editId}`, {
       method: "PUT",
@@ -123,12 +101,7 @@ async function viewInternship(id) {
   title.value = data.title;
   minSalary.value = data.salary.min;
   maxSalary.value = data.salary.max;
-  skills.value = (data.skills || []).join(", ");
-  stipend.value = data.stipend || '';
-  type.value = data.type || '';
-  time.value = data.time || '';
-  workingDays.value = data.working_days || '';
-  duration.value = data.duration || '';
+  skills.value = (data.job_type || []).join(", ");
   link.value = data.referal_link;
 
   isView = true;
@@ -152,12 +125,7 @@ async function editInternship(id) {
   title.value = data.title;
   minSalary.value = data.salary.min;
   maxSalary.value = data.salary.max;
-  skills.value = (data.skills || []).join(", ");
-  stipend.value = data.stipend || '';
-  type.value = data.type || '';
-  time.value = data.time || '';
-  workingDays.value = data.working_days || '';
-  duration.value = data.duration || '';
+  skills.value = (data.job_type || []).join(", ");
   link.value = data.referal_link;
 
   isEdit = true;
@@ -201,11 +169,6 @@ function resetForm() {
   minSalary.value = "";
   maxSalary.value = "";
   skills.value = "";
-  stipend.value = "";
-  type.value = "";
-  time.value = "";
-  workingDays.value = "";
-  duration.value = "";
   link.value = "";
 
   isEdit = false;

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Internship = require("./internship");
+const mongoose = require("mongoose");
 
 /* CREATE Internship */
 router.post("/", async (req, res) => {
@@ -44,18 +45,48 @@ router.get("/:id", async (req, res) => {
 
 
 /* UPDATE Internship */
+// router.put("/:id", async (req, res) => {
+//   try {
+//     const updated = await Internship.findByIdAndUpdate(
+//       req.params.id,
+//       req.body,
+//       { new: true }
+//     );
+//     res.json(updated);
+//   } catch (err) {
+//     res.status(400).json({ error: err.message });
+//   }
+// });
+
 router.put("/:id", async (req, res) => {
   try {
+    let { id } = req.params;
+    id = id.trim();
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid ID format" });
+    }
+
     const updated = await Internship.findByIdAndUpdate(
-      req.params.id,
+      id,
       req.body,
-      { new: true }
+      { new: true, runValidators: true }
     );
-    res.json(updated);
+
+    if (!updated) {
+      return res.status(404).json({ message: "Internship not found" });
+    }
+
+    res.json({
+      message: "Internship updated successfully",
+      data: updated
+    });
+
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
+
 
 
 module.exports = router;

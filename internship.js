@@ -32,26 +32,7 @@ const internshipSchema = new mongoose.Schema({
         type: [String],
         required: true
     },
-    stipend: {
-        type: String,
-        required: true
-    },
-    type: {
-        type: String,
-        required: true
-    },
-    time: {
-        type: String,
-        required: true
-    },
-    working_days: {
-        type: String,
-        required: true
-    },
-    duration: {
-        type: String,
-        required: true
-    },
+   
     referal_link: {
         type: String,
         required: true
