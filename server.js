@@ -6,14 +6,14 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('.'));
+app.use(express.static("."));
 
 mongoose
   .connect("mongodb+srv://admin:admin@cluster0.1apqdc6.mongodb.net/job-posting")
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
 
-app.use("/api/job-posting", require("./internship_routes"));
+app.use("/api/users", require("./internship_routes"));
 
 app.get("/populate", async (req, res) => {
   try {
@@ -32,7 +32,7 @@ app.get("/populate", async (req, res) => {
         title: item.title,
         salary: { min, max, currency: item.salary.currency },
         job_type: item.skills,
-        referal_link: item.referal_link
+        referal_link: item.referal_link,
       });
 
       await internship.save();
@@ -45,7 +45,7 @@ app.get("/populate", async (req, res) => {
 });
 
 // DELETE an internship by MongoDB _id
-app.delete("/api/job-posting", async (req, res) => {
+app.delete("/api/users", async (req, res) => {
   try {
     const { id } = req.body; // Read id from JSON body
 
@@ -103,8 +103,7 @@ app.delete("/api/job-posting", async (req, res) => {
 //   }
 // });
 
-
-app.use("/api/job-posting", require("./internship_routes"));
+app.use("/api/users", require("./internship_routes"));
 
 app.listen(5000, () => {
   console.log("Server running on http://localhost:5000");
